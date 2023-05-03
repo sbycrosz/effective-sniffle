@@ -13,21 +13,29 @@ const Home = () => {
         authorize,
         clearSession,
         user,
-        error,
         getCredentials,
         requireLocalAuthentication,
     } = useAuth0()
+    console.log('user', user)
 
     const onLogin = async () => {
         try {
+            await requireLocalAuthentication(
+                'Unlock with biometric',
+                'Unlock your screen with PIN, pattern, or biometric to start accessing your data',
+                'Cancel',
+                'Use PIN',
+                LocalAuthenticationStrategy.deviceOwner
+            )
             await authorize(
-                { scope: 'openid email offline_access' },
+                { scope: 'openid profile email offline_access' },
                 { customScheme: 'auth0.com.auth0samples' }
             )
-            let credentials = await getCredentials(
-                'openid profile email offline_access'
-            )
-            Alert.alert('AccessToken: ' + credentials.accessToken)
+            // let credentials = await getCredentials(
+            //     'openid profile email offline_access'
+            // )
+            // console.log('credentials', credentials)
+            // Alert.alert('AccessToken: ' + credentials.accessToken)
         } catch (e) {
             console.log(e)
         }
@@ -83,12 +91,9 @@ const Home = () => {
             {!user && (
                 <View>
                     <Text style={{ marginBottom: 20 }}>Welcome!</Text>
-
                     <Button onPress={onLogin} title={'Log in'} />
                 </View>
             )}
-
-            {error && <Text style={{ margin: 20 }}>{error.message}</Text>}
         </View>
     )
 }
