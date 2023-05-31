@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import Auth0 from 'react-native-auth0'
 import config from './auth0-configuration'
-import { View, TextInput, Text, Button } from 'react-native'
+import { View, TextInput, Text, Button, Clipboard } from 'react-native'
 
 const App = () => {
     const auth0 = useMemo(() => {
@@ -105,6 +105,7 @@ const App = () => {
                                 setShowLogin(false)
                                 setEmail('')
                                 setOtp('')
+                                Clipboard.setString(JSON.stringify(credential))
                                 alert(JSON.stringify(credential))
                             } catch (error) {
                                 console.error(error)
@@ -123,6 +124,7 @@ const App = () => {
                                 await auth0.credentialsManager.requireLocalAuthentication()
                                 const credential =
                                     await auth0.credentialsManager.getCredentials()
+                                Clipboard.setString(JSON.stringify(credential))
                                 alert(JSON.stringify(credential))
                             }}
                             title={'Get stored credentials'}
